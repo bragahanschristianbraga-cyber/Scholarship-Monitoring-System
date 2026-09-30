@@ -14,10 +14,7 @@ let scholars = [];
 let ownScholar = null;
 
 const roleIs = (...roles) => roles.includes(me?.role);
-const isAdmin = () => roleIs('admin');
 const isCoordinator = () => roleIs('coordinator');
-const isStaff = () => roleIs('staff', 'admin');
-const isCoordinatorOrAdmin = () => roleIs('coordinator', 'admin');
 const canManageScholars = () => roleIs('staff', 'admin');
 const canManagePrograms = () => roleIs('coordinator', 'admin');
 const canVerify = () => roleIs('staff', 'admin');
@@ -67,7 +64,7 @@ async function loadRefs() {
   scholars = s ?? [];
 
   ownScholar = roleIs('scholar')
-    ? scholars.find((s) => s.user_id === me?.id) ?? null
+    ? scholars.find((x) => x.user_id === me?.id) ?? null
     : null;
 }
 
@@ -84,11 +81,12 @@ async function boot() {
     return;
   }
 
+  // maybeSingle() returns null (not an error) when no profile row exists
   const { data, error } = await sb
     .from('profiles')
     .select('*')
     .eq('id', session.user.id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     toast(`Unable to load profile: ${error.message}`, true);
@@ -117,11 +115,7 @@ async function boot() {
     toast(e.message, true);
   }
 
-  if (me.role === 'scholar') {
-    show('submissions');
-  } else {
-    show('dashboard');
-  }
+  show(me.role === 'scholar' ? 'submissions' : 'dashboard');
 }
 
 function setNavVisibility() {
@@ -167,6 +161,7 @@ $('#lo').addEventListener('click', async () => {
   programs = [];
   scholars = [];
   ownScholar = null;
+  $('#pw').value = '';
   boot();
 });
 
@@ -439,10 +434,9 @@ async function submissionsView() {
 
     const rows = (data ?? []).map((g) => {
       const canVerifyThis = canVerify() && g.submission_status === 'Pending';
-      const canSeeEvaluation = !!g.evaluation_result;
       const action = canVerifyThis
         ? `<button class="btn sm" data-verify="${esc(g.id)}">Verify</button>`
-        : canSeeEvaluation
+        : g.evaluation_result
           ? `<span class="muted">${esc(g.evaluation_result)}</span>`
           : '';
 
@@ -546,11 +540,10 @@ async function complianceView() {
     button.addEventListener('click', async () => {
       if (!canEvaluate()) return toast('Only Scholarship Coordinator or Administrator can evaluate compliance.', true);
 
-      const id = button.dataset.evaluate;
       button.disabled = true;
 
       const { data: result, error: rpcError } = await sb.rpc('evaluate_compliance', {
-        p_submission_id: id
+        p_submission_id: button.dataset.evaluate
       });
 
       button.disabled = false;
