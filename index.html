@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scholarship Monitoring</title>
+<link rel="stylesheet" href="styles.css">
+</head><body>
+<section id="login" class="login">
+  <form id="lf" class="card">
+    <h1>Scholarship Monitoring</h1>
+    <p class="muted">Sign in to continue</p>
+    <label>Email<input id="em" type="email" required autocomplete="username"></label>
+    <label>Password<input id="pw" type="password" required minlength="6" autocomplete="current-password"></label>
+    <button class="btn">Sign in</button>
+    <button type="button" id="su" class="btn ghost">Create scholar account</button>
+  </form>
+</section>
+<div id="app" hidden>
+  <aside>
+    <h1>Scholarship<br>Monitoring</h1>
+    <nav>
+      <button data-view="dashboard">Dashboard</button>
+      <button data-view="scholars">Scholars</button>
+      <button data-view="programs">Scholarship Programs</button>
+      <button data-view="submissions">Grade Submissions</button>
+      <button data-view="compliance">Compliance</button>
+    </nav>
+    <div class="me"><span id="who"></span><button id="lo" class="btn ghost">Logout</button></div>
+  </aside>
+  <main id="view"></main>
+</div>
+<div id="toast" role="status"></div>
+<script type="module" src="app.js"></script>
+</body></html>
