@@ -1,3 +1,4 @@
+[hidden]{display:none !important}
 :root{--g9:#0f3d24;--g7:#16783f;--g5:#2f9e5c;--g1:#e6f4ec;--g0:#f5fbf7;--w:#fff;--ink:#17261d;--mut:#5d6f63;--bd:#d3e5da;--bad:#b3261e;--r:8px}
 *{box-sizing:border-box}
 body{margin:0;font:15px/1.5 "Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--g0)}
